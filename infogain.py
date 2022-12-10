@@ -41,6 +41,7 @@ def infogain(guess, result, possible_words):
 # Returns a list of all possible solutions after filtering a guess
 # with it's result.
 # e.g. filter_guess(float, [2,0,0,0,0], valid_guesses.csv) returns [bloat, gloat]
+# Known issue: words with double letters do not work
 def filter_guess(guess, result, all_possible_words):
 
     # Returns whether a given word is compatible with a given result
