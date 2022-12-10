@@ -40,7 +40,7 @@ def infogain(guess, result, possible_words):
 
 # Returns a list of all possible solutions after filtering a guess
 # with it's result.
-# e.g. filter_guess(float, [0,2,2,2,2]) returns [bloat, gloat]
+# e.g. filter_guess(float, [2,0,0,0,0], valid_guesses.csv) returns [bloat, gloat]
 def filter_guess(guess, result, all_possible_words):
 
     # Returns whether a given word is compatible with a given result
