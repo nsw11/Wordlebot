@@ -38,7 +38,7 @@ def filter_guess(guess, result, all_possible_words):
     word_vector = [set(string.ascii_lowercase) for i in range(5)]
 
     # filter word vector based on result
-    for i, color in result:
+    for i, color in enumerate(result):
         if color == 0: # green
             word_vector[i] = guess[i]
         elif color == 1: # yellow
@@ -56,5 +56,5 @@ def filter_guess(guess, result, all_possible_words):
             if letter not in v_letter:
                 continue
         list_possible_words.append(word)
-        # does word match 
+        # does word match -
     return list_possible_words
