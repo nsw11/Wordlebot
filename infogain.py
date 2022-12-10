@@ -30,31 +30,45 @@ def probability(guess, result):
 
 # Returns a list of all possible solutions after filtering a guess
 # with it's result.
-# e.g. filter_guess(FLOAT, [0,2,2,2,2]) returns [BLOAT]
+# e.g. filter_guess(float, [0,2,2,2,2]) returns [bloat, gloat]
 def filter_guess(guess, result, all_possible_words):
 
-    # a list with 5 elements.
-    # each element is a set of all possible letters.
-    word_vector = [set(string.ascii_lowercase) for i in range(5)]
-
-    # filter word vector based on result
-    for i, color in enumerate(result):
-        if color == 0: # green
-            word_vector[i] = guess[i]
-        elif color == 1: # yellow
-            word_vector[i].remove(guess(i))
-        elif color == 2: # grey
-            for idx in word_vector:
-                idx.remove(guess[i])
-    # this is not ideal: for a yellow result we remove a letter for that pos, but
-    # nothing to enforce that letter must be in some other pos. Perhaps good enough
-
-    # add up list of all possible words
-    list_possible_words = []
+    # Returns whether a given word is compatible with a given result
+    def match_filter(guess, result, word) -> bool:
+        for idx, color in enumerate(result):
+            if color == 0: # green
+                # check if green letter is not in the potential word at idx
+                if word[idx] != guess[idx]:
+                    return False # disqualify
+            elif color == 1: # yellow
+                # check if word doesn't contains this letter,
+                # or if the yellow letter is in the same spot
+                if guess[idx] not in word or word[idx] == guess[idx]:
+                    return False
+            elif color == 2: #grey
+                # check if grey letter is in the potential word at idx
+                if word[idx] == guess[idx]:
+                    return False
+        
+        #if we've gone through all 5 positions and the word pass, it qualifies
+        return True
+    
+    possible_words = []
     for word in all_possible_words:
-        for letter, v_letter in zip(word, word_vector):
-            if letter not in v_letter:
-                continue
-        list_possible_words.append(word)
-        # does word match -
-    return list_possible_words
+        # check if the word is compatible with the results
+        if match_filter(guess, result, word):
+            # append to list if so
+            possible_words.append(word)
+
+    return possible_words
+
+# some test cases
+import wordle_functions
+possible_words = wordle_functions.read_csv('valid_solutions.csv')
+guess = "float"
+result = [2,0,0,0,0]
+print(filter_guess(guess, result, possible_words))
+assert filter_guess(guess, result, possible_words) == ["bloat", "gloat"]
+guess = "chess"
+result = [2, 2, 2, 1, 0]
+print(filter_guess(guess, result, possible_words))
