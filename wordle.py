@@ -1,9 +1,5 @@
 from wordle_functions import *
 
-def infogain (guess,word): #filler function please replace
-    # should have a higher number based on information gained
-    return 1
-
 guesses = read_csv('valid_guesses.csv')
 solutions = read_csv('valid_solutions.csv')
 
