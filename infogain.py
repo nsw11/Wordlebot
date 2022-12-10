@@ -21,7 +21,7 @@ def expected_infogain(guess,possible_words): #filler function please replace
     # TODO enumerate all possible results ([0-2, 0-2, 0-2, 0-2, 0-2])
     for result in generate_all_result_combinations():
         # information of one guess based on its result
-        sum += infogain(guess, result, possible_words)
+        sum += probability(guess, result, possible_words)*infogain(guess, result, possible_words)
     return sum
 
 # returns the probabilIty that a guess ends with a given result
@@ -31,12 +31,12 @@ def probability(guess, result, possible_words):
     num_of_words = len(possible_words)
     # find number of possible solution after filtering with results
     num_pos_solutions = len(filter_guess(guess, result, possible_words))
-    return num_of_words/num_pos_solutions
+    return num_pos_solutions/num_of_words
 
 # return the info we get from making a guess and getting a result back
 def infogain(guess, result, possible_words):
     prob = probability(guess, result, possible_words)
-    return prob*math.log(1/prob, 2)
+    return math.log(1/prob, 2)
 
 # Returns a list of all possible solutions after filtering a guess
 # with it's result.
@@ -72,30 +72,3 @@ def filter_guess(guess, result, all_possible_words):
 
     return possible_words
 
-
-import wordle_functions
-possible_words = wordle_functions.read_csv('testing/3b1b_valid_guesses.csv')
-
-# test filter_guess
-print(filter_guess("weary", [2, 1, 2, 2, 2], ["yodel", "zones"]))
-assert filter_guess("weary", [2, 1, 2, 2, 2], ["yodel", "zones"]) == ["zones"]
-
-guess = "float"
-result = [2,0,0,0,0]
-print(filter_guess(guess, result, possible_words))
-assert filter_guess(guess, result, possible_words) == ["bloat", "gloat", "ploat"]
-
-guess = "weary"
-result = [2, 1, 2, 2, 2]
-print(filter_guess(guess, result, possible_words))
-# print(len(filter_guess(guess, result, possible_words)))
-assert len(filter_guess(guess, result, possible_words)) == 1418
-
-
-# test generate generate_all_result_combinations
-assert generate_all_result_combinations() == [[0, 0, 0], [0, 0, 1], [0, 0, 2], [0, 1, 0], [0, 1, 1], [0, 1, 2], [0, 2, 0], [0, 2, 1], [0, 2, 2], [1, 0, 0], [1, 0, 1], [1, 0, 2], [1, 1, 0], [1, 1, 1], [1, 1, 2], [1, 2, 0], [1, 2, 1], [1, 2, 2], [2, 0, 0], [2, 0, 1], [2, 0, 2], [2, 1, 0], [2, 1, 1], [2, 1, 2], [2, 2, 0], [2, 2, 1], [2, 2, 2]]
-
-
-# test expected_infogain
-print(expected_infogain("weary", possible_words))
-assert expected_infogain("weary", possible_words) == 4.9
