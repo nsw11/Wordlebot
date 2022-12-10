@@ -1,32 +1,42 @@
 import math
 import string
 
+def generate_all_result_combinations():
+    all_result_combinations = []
+    for i in range(3):
+        for j in range (3):
+            for k in range (3):
+                all_result_combinations.append([i,j,k])
+    return all_result_combinations
+
 # Returns the expected information of one guess.
-# A guess consist of ordered 5 letters
-# The expected information is derived by summing the probability 
-# and the information gained of each possible result.
-def infogain(guess,word): #filler function please replace
+# guess: 5 letters representing a word with an expected information when we make a guess
+# possible_words: the possible solutions. If its the first guess the possible_words are
+# all the words. If it's a subsequent guess it is the filtered word space.
+def expected_infogain(guess,possible_words): #filler function please replace
 
     sum = 0
     # for each possible combination of results:
     # add probability of that guess*log(probability^-1)to sum
     # TODO enumerate all possible results ([0-2, 0-2, 0-2, 0-2, 0-2])
-    for result in all_possible_results:
-        probability = probability(guess, result)
+    for result in generate_all_result_combinations():
         # information of one guess based on its result
-        sum += probability*math.log(1/probability, 2)
-
+        sum += infogain(guess, result, possible_words)
     return sum
 
 # returns the probabilIty that a guess ends with a given result
 # e.g. The probability that the guess CRANE returns [0,0,0,0,1] = 0.32
-def probability(guess, result):
-    num_of_words = len(solutions)
-    
+def probability(guess, result, possible_words):
+    # get total number of possible words before we've seen our results
+    num_of_words = len(possible_words)
     # find number of possible solution after filtering with results
-    # TODO some filter function
-    num_pos_solutions = len(filter_guess(guess, result))
+    num_pos_solutions = len(filter_guess(guess, result, possible_words))
     return num_of_words/num_pos_solutions
+
+# return the info we get from making a guess and getting a result back
+def infogain(guess, result, possible_words):
+    prob = probability(guess, result, possible_words)
+    return prob*math.log(1/prob, 2)
 
 # Returns a list of all possible solutions after filtering a guess
 # with it's result.
@@ -47,7 +57,7 @@ def filter_guess(guess, result, all_possible_words):
                     return False
             elif color == 2: #grey
                 # check if grey letter is in the potential word at idx
-                if word[idx] == guess[idx]:
+                if guess[idx] in word:
                     return False
         
         #if we've gone through all 5 positions and the word pass, it qualifies
@@ -62,13 +72,30 @@ def filter_guess(guess, result, all_possible_words):
 
     return possible_words
 
-# some test cases
+
 import wordle_functions
-possible_words = wordle_functions.read_csv('valid_solutions.csv')
+possible_words = wordle_functions.read_csv('testing/3b1b_valid_guesses.csv')
+
+# test filter_guess
+print(filter_guess("weary", [2, 1, 2, 2, 2], ["yodel", "zones"]))
+assert filter_guess("weary", [2, 1, 2, 2, 2], ["yodel", "zones"]) == ["zones"]
+
 guess = "float"
 result = [2,0,0,0,0]
 print(filter_guess(guess, result, possible_words))
-assert filter_guess(guess, result, possible_words) == ["bloat", "gloat"]
-guess = "chess"
-result = [2, 2, 2, 1, 0]
+assert filter_guess(guess, result, possible_words) == ["bloat", "gloat", "ploat"]
+
+guess = "weary"
+result = [2, 1, 2, 2, 2]
 print(filter_guess(guess, result, possible_words))
+# print(len(filter_guess(guess, result, possible_words)))
+assert len(filter_guess(guess, result, possible_words)) == 1418
+
+
+# test generate generate_all_result_combinations
+assert generate_all_result_combinations() == [[0, 0, 0], [0, 0, 1], [0, 0, 2], [0, 1, 0], [0, 1, 1], [0, 1, 2], [0, 2, 0], [0, 2, 1], [0, 2, 2], [1, 0, 0], [1, 0, 1], [1, 0, 2], [1, 1, 0], [1, 1, 1], [1, 1, 2], [1, 2, 0], [1, 2, 1], [1, 2, 2], [2, 0, 0], [2, 0, 1], [2, 0, 2], [2, 1, 0], [2, 1, 1], [2, 1, 2], [2, 2, 0], [2, 2, 1], [2, 2, 2]]
+
+
+# test expected_infogain
+print(expected_infogain("weary", possible_words))
+assert expected_infogain("weary", possible_words) == 4.9
