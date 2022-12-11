@@ -1,6 +1,5 @@
+
 from wordle_functions import *
-import sys
-from infogain import *
 
 # guesses = read_csv('valid_guesses.csv')
 # solutions = read_csv('valid_solutions.csv')
