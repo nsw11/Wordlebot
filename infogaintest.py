@@ -1,4 +1,4 @@
-from infogain import filter_guess, probability, generate_all_result_combinations, infogain, expected_infogain
+from infogain import filter_guess, probability, generate_all_result_combinations, infogain, expected_infogain, list_to_txtfile
 import math
 import wordle_functions
 
@@ -63,6 +63,7 @@ possible_words = wordle_functions.read_csv('valid_solutions.csv')
 firstguess = filter_guess("slate", [2,2,2,2,2], possible_words)
 print(len(firstguess))
 print(firstguess)
+list_to_txtfile(firstguess, "slate-firstguess.txt")
 
 secondguess = filter_guess("crony", [2,1,1,1,2], firstguess)
 print(len(secondguess))
@@ -79,3 +80,4 @@ print(thirdguess)
 # fifthguess = filter_guess("bloke", [2,0,0,2,0], fourthguess)
 # print(len(fifthguess))
 # print(fifthguess)
+

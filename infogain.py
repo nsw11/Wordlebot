@@ -73,3 +73,8 @@ def filter_guess(guess, result, all_possible_words):
 
     return possible_words
 
+def list_to_txtfile(list, filename):
+    f = open(filename, "w")
+    for word in list:
+        f.write(word + "\n")
+    f.close()
