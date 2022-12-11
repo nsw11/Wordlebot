@@ -21,7 +21,8 @@ def expected_infogain(guess,possible_words): #filler function please replace
     # TODO enumerate all possible results ([0-2, 0-2, 0-2, 0-2, 0-2])
     for result in generate_all_result_combinations():
         # information of one guess based on its result
-        sum += probability(guess, result, possible_words)*infogain(guess, result, possible_words)
+        prob = probability(guess, result, possible_words)
+        sum += prob*infogain(prob)
     return sum
 
 # returns the probabilIty that a guess ends with a given result
@@ -34,8 +35,9 @@ def probability(guess, result, possible_words):
     return num_pos_solutions/num_of_words
 
 # return the info we get from making a guess and getting a result back
-def infogain(guess, result, possible_words):
-    prob = probability(guess, result, possible_words)
+def infogain(probability):
+    prob = probability
+    if prob == 0: return 0
     return math.log(1/prob, 2)
 
 # Returns a list of all possible solutions after filtering a guess
